@@ -15,11 +15,29 @@
 package chikachi.discord.command;
 
 import chikachi.discord.core.Proxy;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 
-class SubCommandUptime {
-    static void execute(ICommandSender sender) {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+class SubCommandUptime extends CommandBase {
+    @Override
+    public String getName() {
+        return "uptime";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "/discord uptime";
+    }
+
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         sender.sendMessage(
             new TextComponentString(
                 String.format(

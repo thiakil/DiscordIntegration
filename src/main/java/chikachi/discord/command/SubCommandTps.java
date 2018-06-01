@@ -18,23 +18,41 @@ import chikachi.discord.DiscordCommandSender;
 import chikachi.discord.core.CoreUtils;
 import chikachi.discord.core.MinecraftFormattingCodes;
 import com.google.common.base.Joiner;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
-class SubCommandTps {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+class SubCommandTps extends CommandBase {
     private static final DecimalFormat timeFormatter = new DecimalFormat("########0.000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
-    static void execute(ICommandSender sender, ArrayList<String> args) {
+    @Override
+    public String getName() {
+        return "tps";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "/discord tps [--color]";
+    }
+
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         boolean isDiscord = sender instanceof DiscordCommandSender;
 
-        boolean colored = args.stream().anyMatch(arg -> arg.equalsIgnoreCase("--color"));
+        boolean colored = Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("--color"));
 
         MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         List<String> tpsTimes = new ArrayList<>();
@@ -106,5 +124,10 @@ class SubCommandTps {
                     Joiner.on("\n").join(tpsTimes)
             )
         );
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return getListOfStringsMatchingLastWord(args, "--color");
     }
 }

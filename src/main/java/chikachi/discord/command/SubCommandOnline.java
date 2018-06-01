@@ -16,16 +16,23 @@ package chikachi.discord.command;
 
 import chikachi.discord.DiscordCommandSender;
 import com.google.common.base.Joiner;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-class SubCommandOnline {
-    static void execute(ICommandSender sender) {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+class SubCommandOnline extends CommandBase {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         boolean isDiscord = sender instanceof DiscordCommandSender;
 
         List<String> playerNames = new ArrayList<>();
@@ -69,5 +76,15 @@ class SubCommandOnline {
                 )
             )
         );
+    }
+
+    @Override
+    public String getName() {
+        return "online";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "/discord online";
     }
 }

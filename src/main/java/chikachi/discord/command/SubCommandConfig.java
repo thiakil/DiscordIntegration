@@ -16,14 +16,32 @@ package chikachi.discord.command;
 
 import chikachi.discord.core.DiscordClient;
 import chikachi.discord.core.config.Configuration;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.List;
 
-public class SubCommandConfig {
-    public static void execute(ICommandSender sender, ArrayList<String> args) {
-        String subCommand = args.size() > 0 ? args.remove(0).toLowerCase() : "";
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SubCommandConfig extends CommandBase {
+    public String getName(){
+        return "config";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "/discord link <reload|save|clean>";
+    }
+
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args){
+        String subCommand = args.length > 0 ? args[0].toLowerCase() : "";
 
         switch (subCommand) {
             case "load":
@@ -57,5 +75,10 @@ public class SubCommandConfig {
                 sender.sendMessage(new TextComponentString("Unknown command"));
                 break;
         }
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        return getListOfStringsMatchingLastWord(args, "load", "reload", "save");
     }
 }
